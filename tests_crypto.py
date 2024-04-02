@@ -1,6 +1,6 @@
 """ Test cases for crypto module """
 import unittest
-from crypto import SecureData
+from crypto import Securedata
 
 class Cryptotests(unittest.TestCase):
     """ Test class """
@@ -13,14 +13,14 @@ class Cryptotests(unittest.TestCase):
         ]
         cur_secret_ph = 'asdf'
         for cursec in secret_list:
-            m = SecureData()
+            m = Securedata()
             key, _, enc_bytes, _ = m.encrypt(cursec, cur_secret_ph)
-            dec_cursec = m.decrypt(key, enc_bytes)
+            dec_cursec, _ = m.decrypt(key, enc_bytes)
             self.assertEqual(cursec, dec_cursec)
 
     def test_hash_check(self):
         """ Check hash length """
-        m = SecureData()
+        m = Securedata()
         hashlist = [
             'one',
             'g'*5000,
@@ -29,6 +29,20 @@ class Cryptotests(unittest.TestCase):
             _, curhash, _, _ = m.encrypt('one', curh)
             self.assertEqual(len(curhash), 64)
 
-    def test_check_error(self):
-        """ Check is error returned when bad data entered """
-        
+    def test_check_encrypt_error(self):
+        """ Check is error returned when bad data in encrypt entered """
+        m = Securedata()
+        key, curhash, enc, err = m.encrypt(1, 1)
+        self.assertEqual(key, b'')
+        self.assertEqual(curhash, '')
+        self.assertEqual(enc, b'')
+        self.assertEqual(err, True)
+
+    def test_check_decrypt_error(self):
+        """ Check is error returned when bad data in decrypt entered """
+        m = Securedata()
+        _, _, enc, _ = m.encrypt('1', '1')
+        key = b'Izy02bdCKPYA-uoUKeDs54UjZw41GmF3RmXoVCk65L4='
+        dec_cursec, err = m.decrypt(key, enc)
+        self.assertEqual(dec_cursec, '')
+        self.assertEqual(err, True)

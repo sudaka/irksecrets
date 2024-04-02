@@ -2,7 +2,7 @@
 from hashlib import sha256
 from cryptography.fernet import Fernet
 
-class SecureData():
+class Securedata():
     """ Decrypt / encrypt class """
     def encrypt(self, bsi: str, kp: str):
         """ 
@@ -20,11 +20,11 @@ class SecureData():
             key = Fernet.generate_key()
             f = Fernet(key)
             enctext = f.encrypt(bsi.encode('utf-8'))
-        except Exception as e:
+        except Exception:
             key = b''
-            curhash = b''
+            curhash = ''
             enctext = b''
-            error = e
+            error = True
         return key, curhash, enctext, error
 
     def decrypt(self, key: bytes, enctext: bytes):
@@ -40,19 +40,7 @@ class SecureData():
         f = Fernet(key)
         try:
             dectext = f.decrypt(enctext)
-        except Exception as e:
-            error = e
+        except Exception:
+            error = True
             dectext = b''
         return dectext.decode('utf-8'), error
-
-if __name__ == '__main__':
-    m = SecureData()
-    '''
-    k, c, e = m.encrypt('dsdкецу', 'aasdfasdfasdf')
-    print(type(c))
-    print(e)
-    k = b'lXlAUao_diba6Ifyj5hDr7ntuaUtzhXLCDcVQ6IL8b0='
-    e = b'gAAAAABmC7WFfDE6qSbq1T1uOruloctUY-K-k6DdFT4cE_KCI_4KZ40NAHPXeFdHaW5x6fKLHsQ3aBsWZF6TQV4G8PvY2ofYDw=='
-    out = m.decrypt(k, e)
-    print(type(out), out)
-    '''
