@@ -46,3 +46,12 @@ class Cryptotests(unittest.TestCase):
         dec_cursec, err = m.decrypt(key, enc)
         self.assertEqual(dec_cursec, '')
         self.assertEqual(err, True)
+
+    def test_check_string_transform(self):
+        """ Check correct transform bytes to str """
+        m = Securedata()
+        key, _, enc, _ = m.encrypt('asdf', 'jk;l')
+        newstr = enc.decode('utf-8')
+        newbytes = newstr.encode('utf-8')
+        dec_cursec, _ = m.decrypt(key, newbytes)
+        self.assertEqual('asdf', dec_cursec)
