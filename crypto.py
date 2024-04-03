@@ -13,6 +13,7 @@ class Securedata():
             key - decode/encode key, bytes
             curhash - SHA256 hash of kp, string
             enctext - encripted bsi, bytes
+            error - decode error, bool
         """
         error = False
         try:
