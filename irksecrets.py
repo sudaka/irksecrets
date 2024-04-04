@@ -20,16 +20,23 @@ class Secretkey(BaseModel):
     """
     secret_key: str
 
-@app.post("/generate")
-def generatesecret(bsi: str, kp: str):
+class Secretphase(BaseModel):
+    """
+    bsi - secret string
+    """
+    bsi: str
+
+@app.post("/generate", response_model=Secretkey)
+#def generatesecret(bsi: str, kp: str):
+def generatesecret(curd: Inputdata):
     """ 
     Input: 
         bsi - string for encrypt, 
         kp - control phase
     Output: 
-        secret_key - string join sha256 hash of kp and key for decode secret
+        secret_key - string join sha256 hash of kp+random and key for decode secret
     """
-    newdata = Inputdata(bsi=bsi, kp=kp)
+    newdata = Inputdata(bsi=curd.bsi, kp=curd.kp)
     out = Secretkey(secret_key='')
     if (isinstance(newdata.bsi, str) and isinstance(newdata.kp, str)):
         m = Securedata()
@@ -46,3 +53,28 @@ def generatesecret(bsi: str, kp: str):
         out = Secretkey(secret_key=secret_key)
         return out
     return out
+
+@app.get('/secrets/{secret_key}', response_model=Secretphase)
+def getsecret(secret_key: str):
+    """
+    Input: 
+        secret_key - string join sha256 hash of kp and key for decode secret
+    Output: 
+        bsi - string for encrypt
+    """
+    out = Secretphase(bsi='')
+    if isinstance(secret_key, str) and len(secret_key) > 64:
+        curhash = secret_key[:64]
+        keystr = secret_key[64:]
+        print(curhash)
+        print(keystr)
+        key = keystr.encode('utf-8')
+        d = Dataconnector()
+        m = Securedata()
+        enc_b = d.getsecret(curhash)       
+        dec_cursec, err = m.decrypt(key, enc_b)
+        if err:
+            return out
+        return Secretphase(bsi=dec_cursec)
+    else:
+        return out

@@ -26,7 +26,7 @@ class Dataconnector():
         self.dbport = dbport
         self.dbname = dbname
         self.dbuname = dbuname
-        self.dbpass = os.environ.get('PSQLPASS')
+        self.dbpass = 'qaz123wsx' #os.environ.get('PSQLPASS')
 
     def exec(self, req: str, params: dict = {}):
         """ 

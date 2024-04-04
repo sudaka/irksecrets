@@ -1,5 +1,6 @@
 """ Decrypt/encrypt module """
 from hashlib import sha256
+import random
 from cryptography.fernet import Fernet
 
 class Securedata():
@@ -11,13 +12,15 @@ class Securedata():
             kp - string for hashing
         Output: 
             key - decode/encode key, bytes
-            curhash - SHA256 hash of kp, string
+            curhash - SHA256 hash of kp and random, string
             enctext - encripted bsi, bytes
             error - decode error, bool
         """
         error = False
         try:
-            curhash = sha256(kp.encode('utf-8'), usedforsecurity=False).hexdigest()
+            rndstr = str(random.random())
+            fullstr = ''.join([kp, rndstr])
+            curhash = sha256(fullstr.encode('utf-8')).hexdigest()
             key = Fernet.generate_key()
             f = Fernet(key)
             enctext = f.encrypt(bsi.encode('utf-8'))
