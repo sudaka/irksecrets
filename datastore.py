@@ -19,7 +19,7 @@ class Dataconnector():
     dbuname: str
     dbpass: str
 
-    def __init__(self, dbip: str = '127.0.0.1', dbport: str = '5432',
+    def __init__(self, dbip: str = 'dbhost', dbport: str = '5432',
                  dbname: str = 'irksecrets', dbuname: str = 'irksecrets') -> None:
         """ Init params """
         self.dbip = dbip
@@ -38,8 +38,8 @@ class Dataconnector():
         """
         resp = tuple()
         error = False
-        cstr = f'host={self.dbip} dbname={self.dbname}'
-        cstr += f' user={self.dbuname}'
+        cstr = f'host={self.dbip} port={self.dbport} dbname={self.dbname}'
+        cstr += f' user={self.dbuname} password={self.dbpass}'
         try:
             with psycopg.connect(cstr) as conn:
                 with conn.cursor() as curr:
